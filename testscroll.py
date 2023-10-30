@@ -9,7 +9,7 @@ setBackgroundImage( [  ["dungeonFloor1.png", "dungeonFloor2.png"] ,
                        ["dungeonFloor3.png", "dungeonFloor4.png"]  ])
 
 
-testSprite  = makeSprite("fish.gif", 32)  # links.gif contains 32 separate frames of animation. Sizes are automatically calculated.
+testSprite  = makeSprite("fighter.png", 32)  # links.gif contains 32 separate frames of animation. Sizes are automatically calculated.
 
 moveSprite(testSprite,300,300,True)
 
