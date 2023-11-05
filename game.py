@@ -146,23 +146,28 @@ class Bullet(pygame.sprite.Sprite):
         self.rect.x+=(self.direction*self.speed)
         if self.rect.right<0 or self.rect.left>SCREEN_WIDTH:
             self.kill
-        if pygame.sprite.spritecollide(player, bullet_group, False):
+        if pygame.sprite.spritecollide(player, zombie_group, False):
             if player.alive:
                 player.health -= 50
                 self.kill()
-        if pygame.sprite.spritecollide(zombie, bullet_group, False):
-            if zombie.alive:
-                zombie.health-= 100
-                self.kill()
+        for zombie in zombie_group:
+            if pygame.sprite.spritecollide(zombie, bullet_group, False):
+                if zombie.alive:
+                    zombie.health-= 100
+                    self.kill()
 
 
 
 #creates a sprite gorup
+zombie_group=pygame.sprite.Group()
 bullet_group=pygame.sprite.Group()
 
 
 player = Fighter ('fighter',200, 200, 1.5, 3)
 zombie= Fighter ('enemy',400, 200, 1.5, 3)
+zombie2= Fighter ('enemy',400, 100, 1.5, 3)
+zombie_group.add(zombie)
+zombie_group.add(zombie2)
 
 
 
@@ -181,9 +186,10 @@ while run:
     draw_bg()
 
     player.draw()
-    zombie.draw()
     player.update()
-    zombie.update()
+    for zombie in zombie_group:
+        zombie.draw()
+        zombie.update()
     bullet_group.update()
     bullet_group.draw(screen)
 
