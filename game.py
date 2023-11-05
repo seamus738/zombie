@@ -1,4 +1,7 @@
+
+
 import pygame
+import math
 
 pygame.init()
 
@@ -64,6 +67,7 @@ class Fighter(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.center = (x, y)
 
+
     def update(self):
         self.update_animation()
         self.check_alive()
@@ -86,16 +90,16 @@ class Fighter(pygame.sprite.Sprite):
         if moving_up:
             dy= -self.speed
 
-        if self.jump == True and self.in_air==False:
-            self.vel_y = -11
-            self.jump = False
-            self.in_air=True
+        #if self.jump == True and self.in_air==False:
+            #self.vel_y = -11
+            #self.jump = False
+            #self.in_air=True
         #self.vel_y += GRAVITY
         #if self.vel_y > 10:
             #elf.vel_y
 
 
-        dy += self.vel_y
+        #dy += self.vel_y
         #if self.rect.bottom + dy > 300:
             #dy = 300 - self.rect.bottom
             #self.in_air = False
@@ -105,8 +109,39 @@ class Fighter(pygame.sprite.Sprite):
     def shoot(self):
         if self.shoot_cooldown== 0:
             self.shoot_cooldown = 40
-            bullet = Bullet(self.rect.centerx + (.5 * self.rect.size[0] * self.direction), self.rect.centery,self.direction)
-            bullet_group.add(bullet)
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                p_x, p_y = player.rect.center
+                bx, by = pygame.mouse.get_pos()
+                angle = math.atan2(by - p_y, bx - p_x)
+                bvx = player.speed * math.cos(angle)
+                bvy = player.speed * math.sin(angle)
+                bullet = Bullet(self.rect.centerx + (.5 * self.rect.size[0] ), self.rect.centery, (bvx, bvy))
+                bullet_group.add(bullet)
+
+    def zombie_ai(self):
+        #center of sprite is x and y
+        xx = self.rect.centerx
+        yy = self.rect.centery
+        xxx = player.rect.centerx
+        yyy = player.rect.centery
+
+        # Calculate the direction vector
+        dxx = xxx - xx
+        dyy = yyy - yy
+
+        # Calculate the angle to the player
+        angle = math.atan2(dyy, dxx)
+
+        # Calculate the change in x and y using speed
+        xvx = self.speed * math.cos(angle)
+        yvy = self.speed * math.sin(angle)
+
+        # Update the zombie's position
+        self.rect.centerx += xvx
+        self.rect.centery += yvy
+
+
+
     def update_animation(self):
         ANIMATION_COOLDOWN = 200
         self.image=self.animation_list[self.action][self.frame_index]
@@ -135,17 +170,27 @@ class Fighter(pygame.sprite.Sprite):
         screen.blit(pygame.transform.flip(self.image, self.flip, False), self.rect)
 
 class Bullet(pygame.sprite.Sprite):
-    def __init__(self,x,y,direction):
+    def __init__(self,x,y, direction):
         pygame.sprite.Sprite.__init__(self)
         self.speed = 10
         self.image= bullet_img
         self.rect= self.image.get_rect()
         self.rect.center=(x,y)
-        self.direction= direction
+        self.direction=direction
+
+
+
+
+
     def update(self):
-        self.rect.x+=(self.direction*self.speed)
-        if self.rect.right<0 or self.rect.left>SCREEN_WIDTH:
-            self.kill
+        self.rect.x += self.direction[0]
+        self.rect.y += self.direction[1]
+
+        # Check if the bullet is out of bounds and kill it
+        if self.rect.right < 0 or self.rect.left > SCREEN_WIDTH:
+            self.kill()
+
+
         if pygame.sprite.spritecollide(player, zombie_group, False):
             if player.alive:
                 player.health -= 50
@@ -158,14 +203,14 @@ class Bullet(pygame.sprite.Sprite):
 
 
 
-#creates a sprite gorup
+#creates a sprite group
 zombie_group=pygame.sprite.Group()
 bullet_group=pygame.sprite.Group()
 
 
 player = Fighter ('fighter',200, 200, 1.5, 3)
-zombie= Fighter ('enemy',400, 200, 1.5, 3)
-zombie2= Fighter ('enemy',400, 100, 1.5, 3)
+zombie= Fighter ('enemy',400, 200, 1.5, 1)
+zombie2= Fighter ('enemy',400, 100, 1.5, 1)
 zombie_group.add(zombie)
 zombie_group.add(zombie2)
 
@@ -190,6 +235,7 @@ while run:
     for zombie in zombie_group:
         zombie.draw()
         zombie.update()
+        zombie.zombie_ai()
     bullet_group.update()
     bullet_group.draw(screen)
 
