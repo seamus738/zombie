@@ -11,14 +11,15 @@ SCREEN_HEIGHT= 448
 screen=pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption('Zombie')
 
-#framerate
+
 clock=pygame.time.Clock()
 FPS=60
-GRAVITY= .75
+
 
 bullet_img = pygame.image.load('assets/images/extra/bullet.png').convert_alpha()
 
-BG = pygame.image.load("assets/images/forest2.png")
+BG = pygame.image.load("assets/images/background.png").convert()
+
 def draw_bg():
     screen.blit(BG, (0,0 ))
 class Fighter(pygame.sprite.Sprite):
@@ -30,7 +31,6 @@ class Fighter(pygame.sprite.Sprite):
         self.shoot_cooldown = 0
         self.direction=1
         self.vel_y=0
-        self.jump=False
         self.in_air= True
         self.flip= False
         self.animation_list=[]
@@ -48,12 +48,6 @@ class Fighter(pygame.sprite.Sprite):
         temp_list = []
         for i in range(6):
             img = pygame.image.load(f'assets/images/{self.char_type}/run/{i}.png')
-            img = pygame.transform.scale(img, (img.get_width() * scale, img.get_height() * scale))
-            temp_list.append(img)
-        self.animation_list.append(temp_list)
-        temp_list = []
-        for i in range(1):
-            img = pygame.image.load(f'assets/images/{self.char_type}/jump/{i}.png')
             img = pygame.transform.scale(img, (img.get_width() * scale, img.get_height() * scale))
             temp_list.append(img)
         self.animation_list.append(temp_list)
@@ -90,19 +84,6 @@ class Fighter(pygame.sprite.Sprite):
         if moving_up:
             dy= -self.speed
 
-        #if self.jump == True and self.in_air==False:
-            #self.vel_y = -11
-            #self.jump = False
-            #self.in_air=True
-        #self.vel_y += GRAVITY
-        #if self.vel_y > 10:
-            #elf.vel_y
-
-
-        #dy += self.vel_y
-        #if self.rect.bottom + dy > 300:
-            #dy = 300 - self.rect.bottom
-            #self.in_air = False
         self.rect.x += dx
         self.rect.y += dy
 
@@ -115,7 +96,7 @@ class Fighter(pygame.sprite.Sprite):
                 angle = math.atan2(by - p_y, bx - p_x)
                 bvx = player.speed * math.cos(angle)
                 bvy = player.speed * math.sin(angle)
-                bullet = Bullet(self.rect.centerx + (.5 * self.rect.size[0] ), self.rect.centery, (bvx, bvy))
+                bullet = Bullet(self.rect.centerx + (player.direction*.5 * self.rect.size[0] ), self.rect.centery, (bvx, bvy))
                 bullet_group.add(bullet)
 
     def zombie_ai(self):
@@ -149,7 +130,7 @@ class Fighter(pygame.sprite.Sprite):
             self.update_time = pygame.time.get_ticks()
             self.frame_index += 1
         if self.frame_index >= len(self.animation_list[self.action]):
-            if self.action == 3:
+            if self.action == 2:
                 self.frame_index = 7
             else:
                 self.frame_index=0
@@ -165,26 +146,24 @@ class Fighter(pygame.sprite.Sprite):
             self.health=0
             self.speed=0
             self.alive=False
-            self.update_action(3)
+            self.update_action(2)
     def draw(self):
         screen.blit(pygame.transform.flip(self.image, self.flip, False), self.rect)
+
 
 class Bullet(pygame.sprite.Sprite):
     def __init__(self,x,y, direction):
         pygame.sprite.Sprite.__init__(self)
-        self.speed = 10
+        self.speed = 5
         self.image= bullet_img
         self.rect= self.image.get_rect()
         self.rect.center=(x,y)
         self.direction=direction
 
 
-
-
-
     def update(self):
-        self.rect.x += self.direction[0]
-        self.rect.y += self.direction[1]
+        self.rect.x += self.speed*self.direction[0]
+        self.rect.y += self.speed*self.direction[1]
 
         # Check if the bullet is out of bounds and kill it
         if self.rect.right < 0 or self.rect.left > SCREEN_WIDTH:
@@ -201,6 +180,40 @@ class Bullet(pygame.sprite.Sprite):
                     zombie.health-= 100
                     self.kill()
 
+camera_offset = pygame.Vector2(0,0)
+#BG is background
+#def camera():
+    #display_surface= pygame.display.get_surface()
+    #ground_rect= BG.get_rect(topleft=(0,0))
+    #camera_offset.x=player.rect.centerx-SCREEN_WIDTH//2
+    #camera_offset.y= player.rect.centery-SCREEN_HEIGHT//2
+    #ground_offset=ground_rect.topleft-camera_offset
+    #display_surface.blit(BG, ground_offset)
+    #offset_pos= player.rect.topleft- camera_offset
+    #display_surface.blit(player.image, offset_pos)
+
+
+#def camera():
+
+    # Calculate the camera offset to center the player
+    #camera_offset.x = -SCREEN_WIDTH // 2 +  player.rect.centerx
+    #camera_offset.y = -SCREEN_HEIGHT // 2 +  player.rect.centery
+
+
+    # Clear the screen
+    #screen.fill((0, 0, 0))
+
+    # Calculate the position to draw the background with the camera offset
+    #bg_x = 0 - camera_offset.x
+    #bg_y = 0 - camera_offset.y
+
+    # Draw the background at the calculated position
+    #screen.blit(BG, (bg_x, bg_y))
+    #player.draw()
+
+
+
+
 
 
 #creates a sprite group
@@ -208,14 +221,21 @@ zombie_group=pygame.sprite.Group()
 bullet_group=pygame.sprite.Group()
 
 
-player = Fighter ('fighter',200, 200, 1.5, 3)
-zombie= Fighter ('enemy',400, 200, 1.5, 1)
-zombie2= Fighter ('enemy',400, 100, 1.5, 1)
+
+
+player = Fighter ('fighter',400, 224, 1.5, 2)
+zombie= Fighter ('enemy',200, 200, 1.5, 1)
+zombie2= Fighter ('enemy',600, 100, 1.5, 1)
+zombie3= Fighter ('enemy',400, 0, 1.5, 1)
+zombie4= Fighter ('enemy',500, 600, 1.5, 1)
+zombie5= Fighter ('enemy',50, 200, 1.5, 1)
+zombie6= Fighter ('enemy',0, 800, 1.5, 1)
 zombie_group.add(zombie)
 zombie_group.add(zombie2)
-
-
-
+zombie_group.add(zombie3)
+zombie_group.add(zombie4)
+zombie_group.add(zombie5)
+zombie_group.add(zombie6)
 
 
 run = True
@@ -229,9 +249,10 @@ while run:
     clock.tick(FPS)
 
     draw_bg()
-
+    #camera()
     player.draw()
     player.update()
+
     for zombie in zombie_group:
         zombie.draw()
         zombie.update()
@@ -240,13 +261,13 @@ while run:
     bullet_group.draw(screen)
 
 
+
+
     if player.alive:
         if shoot:
             player.shoot()
         if moving_left or moving_right:
             player.update_action(1)
-        #elif player.in_air:
-            #player.update_action(2)
         else:
             player.update_action(0)
 
@@ -254,7 +275,6 @@ while run:
     for event in pygame.event.get():
         if event.type==pygame.QUIT:
             run= False
-        #keyboard inputs
         if event.type == pygame.MOUSEBUTTONDOWN:
             shoot = True
         if event.type == pygame.MOUSEBUTTONUP:
@@ -268,8 +288,7 @@ while run:
                 moving_up=True
             if event.key == pygame.K_s:
                 moving_down=True
-            if event.key == pygame.K_SPACE and player.alive:
-                player.jump=False
+
         if event.type ==pygame.KEYUP:
             if event.key== pygame.K_d:
                 moving_right=False
@@ -279,7 +298,6 @@ while run:
                 moving_up=False
             if event.key == pygame.K_s:
                 moving_down=False
-            if event.key == pygame.K_SPACE:
-                player.jump=False
+
     pygame.display.update()
 pygame.quit()

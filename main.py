@@ -14,7 +14,7 @@ FPS=60
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("green grass")
 
-green=pygame.image.load("../images/forest2.png").convert()
+green=pygame.image.load("assets/images/forest2.png").convert()
 green_width=green.get_width()
 green_rect=green.get_rect()
 

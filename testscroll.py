@@ -5,11 +5,11 @@ screenSize(600,600)
 setAutoUpdate(False)
 
 
-setBackgroundImage( [  ["dungeonFloor1.png", "dungeonFloor2.png"] ,
-                       ["dungeonFloor3.png", "dungeonFloor4.png"]  ])
+setBackgroundImage( [  ["assets/images/dungeonFloor1.png", "assets/images/dungeonFloor2.png"] ,
+                       ["assets/images/dungeonFloor3.png", "assets/images/dungeonFloor4.png"]  ])
 
 
-testSprite  = makeSprite("fighter.png", 32)  # links.gif contains 32 separate frames of animation. Sizes are automatically calculated.
+testSprite  = makeSprite("assets/images/fighter/idle/1.png", 32)  # links.gif contains 32 separate frames of animation. Sizes are automatically calculated.
 
 moveSprite(testSprite,300,300,True)
 
