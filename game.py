@@ -2,6 +2,7 @@ import pygame
 import math
 from settings import *
 from fighter import *
+
 pygame.init()
 
 
@@ -13,13 +14,13 @@ FPS = 60
 
 
 BG = pygame.image.load("assets/images/background.png").convert()
+WORLD_WIDTH = BG.get_width()
+WORLD_HEIGHT = BG.get_height()
 
+world_surface = BG.copy()
 
 def draw_bg():
-    screen.blit(BG, (0, 0))
-
-
-
+    world_surface.blit(BG, (0, 0))
 
 
 def collide():
@@ -63,8 +64,8 @@ def camera():
     bg_y = 0 - 2 * camera_offset.y
 
     # Draw the background at the calculated position
-    screen.blit(BG, (bg_x, bg_y))
-    player.draw(screen)
+    world_surface.blit(BG, (bg_x, bg_y))
+    player.draw(world_surface)
 
 
 
@@ -107,12 +108,12 @@ while run :
     for zombie in zombie_group:
         zombie.update()
         zombie.zombie_ai(player)
-        zombie.draw(screen)
+        zombie.draw(world_surface)
     collide()
 
 
     bullet_group.update()
-    bullet_group.draw(screen)
+    bullet_group.draw(world_surface)
 
     if player.alive:
         if moving_left or moving_right:
@@ -149,6 +150,12 @@ while run :
             if event.key == pygame.K_s:
                 moving_down = False
 
+    clipping_rect = player.rect.copy()
+    clipping_rect.width = SCREEN_WIDTH
+    clipping_rect.height = SCREEN_HEIGHT
+    clipping_rect.center = player.rect.center
+
+    screen.blit(world_surface, (0, 0), clipping_rect)
     pygame.display.update()
 
 

@@ -1,6 +1,7 @@
 import pygame
 import math
 from bullet import Bullet
+from settings import *
 
 class Fighter(pygame.sprite.Sprite):
     def __init__(self, char_type, x, y, scale, speed):
@@ -66,6 +67,11 @@ class Fighter(pygame.sprite.Sprite):
 
         self.rect.x += dx
         self.rect.y += dy
+        # check if position is valid
+        if self.rect.left < 64:
+            self.rect.left = 64
+        if self.rect.right > WORLD_WIDTH - 64:
+            self.rect.right = WORLD_WIDTH - 64
 
     def shoot(self, bx, by, bullet_group):
         if self.shoot_cooldown > 0:
