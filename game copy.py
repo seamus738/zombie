@@ -170,17 +170,16 @@ class Bullet(pygame.sprite.Sprite):
         if self.rect.right < 0 or self.rect.left > SCREEN_WIDTH:
             self.kill()
 
+
+        if pygame.sprite.spritecollide(player, zombie_group, False):
+            if player.alive:
+                player.health -= 100
+                self.kill()
         for zombie in zombie_group:
             if pygame.sprite.spritecollide(zombie, bullet_group, False):
                 if zombie.alive:
                     zombie.health-= 100
                     self.kill()
-def collide():
-    if pygame.sprite.spritecollide(player, zombie_group, False):
-        if player.alive:
-            player.health -= 100
-            #self.kill()
-
 
 camera_offset = pygame.Vector2(0,0)
 #BG is background
@@ -196,23 +195,55 @@ camera_offset = pygame.Vector2(0,0)
     #display_surface.blit(player.image, clipping_rect)
 
 
-def camera():
+#def camera():
 
     #Calculate the camera offset to center the player
-    camera_offset.x = -SCREEN_WIDTH//2  +  player.rect.centerx
-    camera_offset.y = -SCREEN_HEIGHT//2 +  player.rect.centery
+    #camera_offset.x = -SCREEN_WIDTH // 2 +  player.rect.centerx
+    #camera_offset.y = -SCREEN_HEIGHT // 2 +  player.rect.centery
 
 
     # Clear the screen
-    screen.fill((0, 0, 0))
+    #screen.fill((0, 0, 0))
 
     # Calculate the position to draw the background with the camera offset
-    bg_x = 0 - 2*camera_offset.x
-    bg_y = 0 - 2*camera_offset.y
+    #bg_x = 0 - camera_offset.x
+    #bg_y = 0 - camera_offset.y
 
     # Draw the background at the calculated position
-    screen.blit(BG, (bg_x, bg_y))
-    player.draw()
+    #screen.blit(BG, (bg_x, bg_y))
+    #player.draw()
+
+player = Fighter ('fighter',400, 224, 1.5, 2)
+
+hab = SCREEN_WIDTH // 2
+habb = SCREEN_HEIGHT // 2
+
+# Set the background's rect to have its center at the specified coordinates
+BG_rect = BG.get_rect(center=(hab, habb))
+
+hab = SCREEN_WIDTH // 2
+habb = SCREEN_HEIGHT // 2
+
+# Set the background's rect to have its center at the specified coordinates
+BG_rect = BG.get_rect(center=(hab, habb))
+
+player_x = SCREEN_WIDTH // 2 #- player.get_width() // 2  # Center the player horizontally
+player_y = SCREEN_HEIGHT // 2 #- player.get_height() // 2  # Center the player vertically
+
+
+
+hab += 1  # Example: Move the background to the right
+
+# Redraw the background
+screen.blit(BG, BG_rect)
+
+# Draw the player at the fixed position
+screen.blit(player.image, (player_x, player_y))
+
+pygame.display.update()
+clock.tick(60)  # Adjust the frame rate as needed
+
+
 
 
 
@@ -226,7 +257,7 @@ bullet_group=pygame.sprite.Group()
 
 
 
-player = Fighter ('fighter',400, 224, 1.5, 2)
+#player = Fighter ('fighter',400, 224, 1.5, 2)
 zombie= Fighter ('enemy',200, 200, 1.5, 1)
 zombie2= Fighter ('enemy',600, 100, 1.5, 1)
 zombie3= Fighter ('enemy',400, 0, 1.5, 1)
@@ -251,16 +282,15 @@ while run:
 
     clock.tick(FPS)
 
-    #draw_bg()
-    camera()
-    #player.draw()
+    draw_bg()
+    #camera()
+    player.draw()
     player.update()
 
     for zombie in zombie_group:
         zombie.draw()
         zombie.update()
         zombie.zombie_ai()
-    collide()
     bullet_group.update()
     bullet_group.draw(screen)
 
