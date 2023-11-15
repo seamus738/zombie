@@ -38,18 +38,6 @@ def collide():
 camera_offset = pygame.Vector2(0, 0)
 
 
-# BG is background
-# def camera():
-# display_surface= pygame.display.get_surface()
-# camera_offset.x=player.rect.centerx-SCREEN_WIDTH//2
-# camera_offset.y= player.rect.centery-SCREEN_HEIGHT//2
-# ground_offset=ground_rect.topleft-camera_offset
-# display_surface.blit(BG, ground_offset)
-# offset_pos= player.rect.topleft- camera_offset
-# clipping_rect = pygame.rect.Rect(0,0,SCREEN_HEIGHT,SCREEN_WIDTH)
-# clipping_rect.center = player.rect.center
-# display_surface.blit(player.image, clipping_rect)
-
 
 def camera():
     # Calculate the camera offset to center the player
@@ -95,7 +83,6 @@ moving_right = False
 moving_left = False
 moving_up = False
 moving_down = False
-shoot = False
 while run :
 
     clock.tick(FPS)
@@ -110,10 +97,8 @@ while run :
         zombie.zombie_ai(player)
         zombie.draw(world_surface)
     collide()
-
-
-    bullet_group.update()
     bullet_group.draw(world_surface)
+    bullet_group.update()
 
     if player.alive:
         if moving_left or moving_right:
@@ -126,10 +111,8 @@ while run :
         if event.type == pygame.QUIT:
             run = False
         if event.type == pygame.MOUSEBUTTONDOWN:
-            player.shoot(pygame.mouse.get_pos()[0],
-                         pygame.mouse.get_pos()[1],
-                         bullet_group)
-            shoot = True
+            player.shoot(pygame.mouse.get_pos()[0]+camera_offset.x,
+                         pygame.mouse.get_pos()[1]+ camera_offset.y, bullet_group)
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_d:
                 moving_right = True
@@ -161,3 +144,5 @@ while run :
 
 
 pygame.quit()
+
+

@@ -68,24 +68,23 @@ class Fighter(pygame.sprite.Sprite):
         self.rect.x += dx
         self.rect.y += dy
         # check if position is valid
-        if self.rect.left < 64:
-            self.rect.left = 64
-        if self.rect.right > WORLD_WIDTH - 64:
-            self.rect.right = WORLD_WIDTH - 64
+        if self.rect.left < 255:
+            self.rect.left = 255
+        if self.rect.right > WORLD_WIDTH - 250:
+            self.rect.right = WORLD_WIDTH - 250
 
     def shoot(self, bx, by, bullet_group):
-        if self.shoot_cooldown > 0:
-            return  # can't shoot
+        if self.shoot_cooldown== 0:
+            self.shoot_cooldown = 20
+            p_x, p_y = self.rect.center
+            angle = math.atan2(by - p_y, bx - p_x)
+            bvx = self.speed * math.cos(angle)
+            bvy = self.speed * math.sin(angle)
+            bullet = Bullet(self.rect.centerx + (self.direction * .5 * self.rect.size[0]),
+                            self.rect.centery,(bvx, bvy))
+            bullet_group.add(bullet)
+        print(bx,by)
 
-        self.shoot_cooldown = 40
-        p_x, p_y = self.rect.center
-        angle = math.atan2(by - p_y, bx - p_x)
-        bvx = self.speed * math.cos(angle)
-        bvy = self.speed * math.sin(angle)
-        # bullet = Bullet(SCREEN_WIDTH//2 + (player.direction*.5 * self.rect.size[0] ), SCREEN_HEIGHT//2, (bvx, bvy))
-        bullet = Bullet(self.rect.centerx + (self.direction * .5 * self.rect.size[0]), self.rect.centery,
-                        (bvx, bvy))
-        bullet_group.add(bullet)
 
     def zombie_ai(self, player):
         # center of sprite is x and y
