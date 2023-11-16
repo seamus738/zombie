@@ -16,6 +16,6 @@ class Bullet(pygame.sprite.Sprite):
         self.rect.y += self.speed * self.direction[1]
 
         # Check if the bullet is out of bounds and kill it
-        if self.rect.right < 0 or self.rect.left > SCREEN_WIDTH:
-            self.kill()
+        #if self.rect.right < 0 or self.rect.left > SCREEN_WIDTH:
+            #self.kill()
 

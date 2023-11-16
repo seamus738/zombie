@@ -3,6 +3,7 @@ import math
 from bullet import Bullet
 from settings import *
 
+
 class Fighter(pygame.sprite.Sprite):
     def __init__(self, char_type, x, y, scale, speed):
         self.char_type = char_type
@@ -132,6 +133,9 @@ class Fighter(pygame.sprite.Sprite):
             self.speed = 0
             self.alive = False
             self.update_action(2)
+
+
+
 
     def draw(self, screen):
         screen.blit(pygame.transform.flip(self.image, self.flip, False), self.rect)
