@@ -112,13 +112,10 @@ class Fighter(pygame.sprite.Sprite):
 
 
     def zombie_ai(self, player):
-        # center of sprite is x and y
         xx = self.rect.centerx
         yy = self.rect.centery
         xxx = player.rect.centerx
         yyy = player.rect.centery
-
-        # Calculate the direction vector
         dxx = xxx - xx
         dyy = yyy - yy
 
@@ -132,6 +129,7 @@ class Fighter(pygame.sprite.Sprite):
         # Update the zombie's position
         self.rect.centerx += xvx
         self.rect.centery += yvy
+
 
     def update_animation(self):
         ANIMATION_COOLDOWN = 200
@@ -170,6 +168,7 @@ def draw_bg():
     world_surface.blit(BG, (0, 0))
 
 sound_file = pygame.mixer.Sound('assets/images/Mitch.wav')
+emma_file = pygame.mixer.Sound('assets/images/emma (1).wav')
 def collide():
     if pygame.sprite.spritecollide(player, zombie_group, False):
         if player.alive:
@@ -198,12 +197,6 @@ def camera():
     world_surface.blit(BG, (bg_x, bg_y))
     player.draw(world_surface)
 
-
-
-
-
-
-#creates a sprite group
 zombie_group=pygame.sprite.Group()
 bullet_group=pygame.sprite.Group()
 
@@ -223,13 +216,13 @@ zombie_group.add(zombie6)
 
 def generate_zombies(num_zombies):
     for _ in range(num_zombies):
-        zombie_x = random.randint(100,1000)
-        zombie_y = random.randint(100, 1000)
+        zombie_x = random.randint(100,1270)
+        zombie_y = random.randint(100, 1190)
 
         # Ensure zombies don't spawn where the player is
         while abs(zombie_x - player.rect.centerx) < 200 and abs(zombie_y - player.rect.centery) < 200:
-            zombie_x = random.randint(100, 1000)
-            zombie_y = random.randint(100, 1000)
+            zombie_x = random.randint(100, 1270)
+            zombie_y = random.randint(100, 1190)
 
         zombie = Fighter('enemy', zombie_x, zombie_y, 1.5, 1)
         zombie_group.add(zombie)
@@ -241,12 +234,12 @@ def next_level():
     generate_zombies(num_zombies)
 
 run = True
+
 moving_right = False
 moving_left = False
 moving_up = False
 moving_down = False
 while run :
-
     clock.tick(FPS)
 
     # draw_bg()
@@ -295,6 +288,7 @@ while run :
             if event.key == pygame.K_s:
                 moving_down = False
         if len(zombie_group) == 0:
+            emma_file.play()
             next_level()
     clipping_rect = player.rect.copy()
     clipping_rect.width = SCREEN_WIDTH
