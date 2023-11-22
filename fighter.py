@@ -165,17 +165,19 @@ def game_screen():
 
     sound_file = pygame.mixer.Sound('assets/images/Mitch.wav')
     emma_file = pygame.mixer.Sound('assets/images/emma (1).wav')
+    horror_file= pygame.mixer.Sound('assets/images/horror.wav')
 
     def collide():
-        if pygame.sprite.spritecollide(player, zombie_group, False):
-            if player.alive:
-                player.health -= 100
-
-        for zombie in zombie_group:
-            if pygame.sprite.spritecollide(zombie, bullet_group, True):
-                sound_file.play()
+            for zombie in zombie_group:
                 if zombie.alive:
-                    zombie.health -= 100
+                    if pygame.sprite.spritecollide(zombie, bullet_group, True):
+                        sound_file.play()
+                        zombie.health -= 100
+            for zombie in zombie_group:
+                collided_zombies = pygame.sprite.spritecollide(player, zombie_group, False)
+                for cz in collided_zombies:
+                    if cz.alive and player.alive:
+                            player.health -= 100
 
     camera_offset = pygame.Vector2(0, 0)
 
@@ -228,7 +230,7 @@ def game_screen():
     def next_level():
         global current_level
         current_level += 1
-        num_zombies = min(current_level * 10, max_zombies_per_level)
+        num_zombies = min(current_level * 8, max_zombies_per_level)
         generate_zombies(num_zombies)
 
     run = True
@@ -239,7 +241,6 @@ def game_screen():
     moving_down = False
     while run:
         clock.tick(FPS)
-
         # draw_bg()
         camera()
         # player.draw()
