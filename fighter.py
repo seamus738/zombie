@@ -3,6 +3,7 @@ import math
 from settings import *
 from bullet import *
 import random
+import time
 
 pygame.init()
 
@@ -90,7 +91,6 @@ def game_screen():
 
             self.rect.x += dx
             self.rect.y += dy
-            # check if position is valid
             if self.rect.left < 290:
                 self.rect.left = 290
             if self.rect.right > WORLD_WIDTH - 1767:
@@ -133,7 +133,10 @@ def game_screen():
 
         def update_animation(self):
             ANIMATION_COOLDOWN = 200
+            #try:
             self.image = self.animation_list[self.action][self.frame_index]
+            #except IndexError:
+                #print("oh well :(")
             if pygame.time.get_ticks() - self.update_time > ANIMATION_COOLDOWN:
                 self.update_time = pygame.time.get_ticks()
                 self.frame_index += 1
@@ -302,4 +305,11 @@ def game_screen():
                     (SCREEN_WIDTH -20, 0))
         pygame.display.flip()
         pygame.display.update()
+
+        if player.alive==False:
+            if 7 == len(player.animation_list[2]):
+                run=False
+
+
+
 

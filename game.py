@@ -298,6 +298,9 @@ while run :
     screen.blit(world_surface, (0, 0), clipping_rect)
     pygame.display.update()
 
+    if player.alive == False:
+        if 7 >= len(player.animation_list[2]):
+            run=False
 
 
 pygame.quit()

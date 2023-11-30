@@ -1,22 +1,15 @@
 
 from fighter import *
-import sys
+
 
 pygame.init()
 
-
-
-screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-pygame.display.set_caption('Zombie')
 game_font=pygame.font.Font('assets/fonts/Black_Crayon.ttf', 128)
 second_game_font=pygame.font.Font('assets/fonts/Black_Crayon.ttf', 40)
 instructions_game_font=pygame.font.Font('assets/fonts/Black_Crayon.ttf', 30)
 
-
-
-
 Menu_Screen = True
-end_screen=True
+
 while Menu_Screen:
     screen.fill((52, 78, 91))
     text = game_font.render("Zombies!", True, (255, 69, 0))
@@ -35,9 +28,24 @@ while Menu_Screen:
 
         if event.type == pygame.QUIT:
             Menu_screen = False
-            sys.exit()
 
 game_screen()
+
+#End_Screen=True
+
+#while End_Screen:
+    #screen.fill((52, 78, 91))
+    #pygame.display.flip()
+
+
+    #for event in pygame.event.get():
+        #if event.type == pygame.KEYDOWN:
+            #if event.key == pygame.K_SPACE:
+                #End_Screen = False
+
+        #if event.type == pygame.QUIT:
+            #End_screen = False
+
 
 
 pygame.quit()
